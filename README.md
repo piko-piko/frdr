@@ -2,6 +2,13 @@
 
 A terminal RSS reader which utilizes popular *nix tools
 
+## Fork modifications:
+- `frdr` doesn't update on run. It happends either on reload or by using the `-u` parameter
+- `-u` parameter prints out unread items (for notification purposes)
+- attached images get added to the content of the post
+- [pager/kitty-image-pager.sh](https://github.com/piko-piko/frdr/blob/master/pager/kitty-image-pager.sh), when used as FRDR_PREVIEWER, displays the attached image
+- ctrl+t translates the post
+
 [![asciicast](https://asciinema.org/a/656386.svg)](https://asciinema.org/a/656386)
 
 ## Requirements
@@ -39,6 +46,7 @@ All controls except enter are able to be overridden.
 | Key    | Description
 | ---    | ---
 | enter  | Open post in `$PAGER`
+| ctrl-t | Translate post (using [translate-shell](https://github.com/soimort/translate-shell))
 | ctrl-r | Refresh all feeds
 | ctrl-y | Mark post as read
 | ctrl-u | Mark post as unread
