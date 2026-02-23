@@ -46,11 +46,18 @@ download_feeds() {
       rss2json |
       jq -c --arg alias "$alias" '. as $c | $c.items // $c.entries | .[] |
 	   {
-       title: (.title.value? // .title),
+       title: (if .enclosure then "[IMG]" else "" end) + (.title.value? // .title),
        timestamp: ((try(.pub_date | strptime("%a, %d %b %Y %T %Z") | mktime) // (.updated | fromdate)) | tostring),
        link: (.link // .id),
        guid: (.guid // .id // .link),
-       content: ((.description // .content.value?) // .content),
+       content: ((.description // .content.value?) // .content ) + (
+         (
+           if .enclosure == null then []
+           elif (.enclosure | type) == "array" then .enclosure
+           else [ .enclosure ]
+           end
+         ) | map("<img src=\"" + .url + "\">") | join("")
+       ),
 	     channel_alias: $alias,
        channel: ($c.title.value? // $c.title),
        channel_link: ($c.link // $c.id),
