@@ -135,6 +135,11 @@ help_header() {
 #########################
 
 [[ $1 == "-s" ]] && return # for sourcing
+[[ $1 == "-u" ]] && {
+  download_feeds
+  aggregate_items | sed '1d' | cut -d, -f4
+  exit 1
+} # for checking for updates
 
 [[ ! -f $FRDR_CONFIG_FILE ]] &&
   echo "Please create $FRDR_CONFIG_FILE by copying the sample.config.bash" && exit 1
@@ -145,7 +150,6 @@ aggregate_items |
     --multi \
     --ansi \
     --listen "$FRDR_PORT" \
-    --header="Feed Reader - Loading..." \
     --header-first \
     --header-lines=1 \
     --prompt="Search: " \
@@ -153,7 +157,6 @@ aggregate_items |
     --delimiter="," \
     --with-nth=4.. \
     --preview="jq -r '.content' {2} | ${FRDR_PREVIEWER:=less}" \
-    --bind="start:unbind($FRDR_UNMARK)+execute(bash -c '. frdr -s; download_feeds &')" \
     --bind="$FRDR_REFRESH:reload-sync(bash -c '. frdr -s; download_feeds; aggregate_items')" \
     --bind="$FRDR_SELECT_ALL:toggle-all" \
     --bind="$FRDR_MARK:reload(bash -c \". frdr -s; mark read {+2}; aggregate_items\")" \
