@@ -18,9 +18,9 @@ FRDR_VIEW_UNREAD=esc
 FRDR_VIEW_READ=alt-h
 FRDR_OPEN=ctrl-o
 FRDR_SELECT_ALL=ctrl-space
+FRDR_TRANSLATE=ctrl-t
 FRDR_SHOW_HELP=true
 FRDR_PORT=2122
-
 BIND_STATE_UNREAD="unbind($FRDR_UNMARK)+reload(bash -c '. frdr -s; aggregate_items')+transform-header(printf 'Feed Reader - Unread')+rebind($FRDR_MARK,$FRDR_VIEW_READ)"
 
 load_config() {
@@ -158,6 +158,7 @@ aggregate_items |
     --bind="$FRDR_SELECT_ALL:toggle-all" \
     --bind="$FRDR_MARK:reload(bash -c \". frdr -s; mark read {+2}; aggregate_items\")" \
     --bind="$FRDR_UNMARK:reload(bash -c \". frdr -s; mark unread {+2}; aggregate_items_read\")" \
+    --bind="$FRDR_TRANSLATE:preview(jq -r '.content' {2} | trans --show-alternatives=n --show-languages=n --show-prompt-message=n --no-ansi)" \
     --bind="$FRDR_VIEW_UNREAD:$BIND_STATE_UNREAD" \
     --bind="$FRDR_VIEW_READ:unbind($FRDR_MARK,$FRDR_VIEW_READ)+reload(bash -c '. frdr -s; aggregate_items_read')+transform-header(printf 'Feed Reader - Read')+rebind($FRDR_UNMARK,$FRDR_VIEW_UNREAD)" \
     --bind="enter:execute(jq -r '.content' {2} | ${FRDR_PAGER:=less})+reload(bash -c '. frdr -s; mark read {2}; aggregate_items')" \
